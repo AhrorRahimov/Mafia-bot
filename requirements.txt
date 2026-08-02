@@ -1,0 +1,14 @@
+# Core async Telegram bot framework
+aiogram==3.30.0
+
+# Async DB stack — asyncpg for PostgreSQL (Render), aiosqlite kept for local dev
+SQLAlchemy>=2.0.35,<3
+asyncpg>=0.29,<1
+aiosqlite>=0.20,<1
+
+# Minimal HTTP server for Render Web Service health-check + keep-alive
+aiohttp>=3.10,<4
+
+# Configuration
+pydantic-settings>=2.5,<3
+python-dotenv>=1.0,<2

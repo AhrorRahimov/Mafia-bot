@@ -1,0 +1,45 @@
+# Render Blueprint — declarative service configuration.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# After pushing this file to GitHub, go to:
+#   Render → New → Blueprint → pick this repo.
+# Render will offer to create both services defined below.
+
+services:
+  - type: web
+    name: mafia-bot
+    runtime: python
+    plan: free
+    region: frankfurt   # change to your nearest region if needed
+    branch: main
+    rootDir: .
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run.py
+    healthCheckPath: /healthz
+    autoDeploy: true
+    # Persistent storage: without a disk the SQLite file is recreated on
+    # every deploy and all stats/coins are lost. DATA_DIR points the app
+    # at the mounted volume.
+    disk:
+      name: mafia-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: BOT_TOKEN
+        sync: false        # set in the Render UI (secret)
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mafia-db
+          property: connectionString
+      - key: WEBHOOK_ENABLED
+        value: "false"
+      - key: DATA_DIR
+        value: /var/data
+
+databases:
+  - name: mafia-db
+    databaseName: mafia
+    plan: free            # 90 days free, then paid tier kicks in
+    ipAllowList: []       # allow connections from Render services only
